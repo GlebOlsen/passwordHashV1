@@ -32,16 +32,15 @@ namespace Client
             {
                 Console.WriteLine("There was no match!");
                 Console.ReadLine();
-            } else
+            } 
+            else
             {
                 Console.WriteLine("The match is " + match);
                 Console.ReadLine();
-                
             }
             ns.Close();
             clientSocket.Close();
         }
-
         private static bool CheckWithVariations(Dictionary<string, string> userInformation, string w)
         {
             List<string> words = new List<string>();
@@ -55,15 +54,30 @@ namespace Client
             {
                 words.Add(w + i);
                 words.Add(i + w);
+
+                words.Add(w.ToUpper() + i);
+                words.Add(w.ToLower() + i);
+                words.Add(StringUtilities.Capitalize(w) + i);
+                words.Add(StringUtilities.Reverse(w) + i);
+
+                words.Add(i + w.ToUpper());
+                words.Add(i + w.ToLower());
+                words.Add(i + StringUtilities.Capitalize(w));
+                words.Add(i + StringUtilities.Reverse(w));
+
             }
             for (int i = 0; i < 10; i++)
             {
                 for (int j = 0; j < 10; j++)
                 {
                     words.Add(i + w + j);
+                    words.Add(i + w.ToUpper() + j);
+                    words.Add(i + w.ToLower() + j);
+                    words.Add(i + StringUtilities.Capitalize(w) + j);
+                    words.Add(i + StringUtilities.Reverse(w) + j);
                 }
             }
-            return words.Any((f) => CheckWord(f, userInformation));
+            return words.Any((f) => CheckWord(f, userInformation)); 
         }
         public static string GetSha1(string value)
         {
@@ -86,6 +100,7 @@ namespace Client
 
         private static bool CheckWord(string f, Dictionary<string, string> userInformation)
         {
+            Console.WriteLine(f);
             //Først hasher ordet f
             f = GetSha1(f);
             //Så
