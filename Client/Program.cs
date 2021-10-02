@@ -26,8 +26,16 @@ namespace Client
             //read user inputs
             Dictionary<string, string> userInformation = JsonConvert.DeserializeObject<Dictionary<string, string>>(sr.ReadLine());
             List<string> dictionaryWords = JsonConvert.DeserializeObject<List<string>>(sr.ReadLine());
-
-            string match = dictionaryWords.Where((w) => CheckWithVariations(userInformation, w)).FirstOrDefault();
+            String match = "";
+            foreach (String word in dictionaryWords)
+            {
+                string possibleMatch = CheckWithVariations(userInformation, word);
+                if (possibleMatch != null)
+                {
+                    match = possibleMatch;
+                    break;
+                }
+            }
             if (string.IsNullOrEmpty(match))
             {
                 Console.WriteLine("There was no match!");
@@ -41,7 +49,7 @@ namespace Client
             ns.Close();
             clientSocket.Close();
         }
-        private static bool CheckWithVariations(Dictionary<string, string> userInformation, string w)
+        private static string CheckWithVariations(Dictionary<string, string> userInformation, string w)
         {
             List<string> words = new List<string>();
             words.Add(w);
@@ -77,7 +85,17 @@ namespace Client
                     words.Add(i + StringUtilities.Reverse(w) + j);
                 }
             }
-            return words.Any((f) => CheckWord(f, userInformation)); 
+            string match = "";
+
+            match = words.Find((f) => CheckWord(f, userInformation));
+            if (String.IsNullOrEmpty(match))
+            {
+                return null;
+            }
+            else
+            {
+                return match;
+            }
         }
         public static string GetSha1(string value)
         {
@@ -100,7 +118,6 @@ namespace Client
 
         private static bool CheckWord(string f, Dictionary<string, string> userInformation)
         {
-            Console.WriteLine(f);
             //Først hasher ordet f
             f = GetSha1(f);
             //Så
