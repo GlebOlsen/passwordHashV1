@@ -32,14 +32,18 @@ namespace Client
                 string possibleMatch = CheckWithVariations(userInformation, word);
                 if (possibleMatch != null)
                 {
+                    
                     matches.Add(possibleMatch);
+
                 }
             }
+            sw.WriteLine(JsonConvert.SerializeObject(matches));
+
             if (matches.Count == 0)
             {
                 Console.WriteLine("There was no match!");
                 Console.ReadLine();
-            } 
+            }
             else
             {
                 Console.WriteLine("The match is " + string.Join(",", matches));
@@ -131,7 +135,7 @@ namespace Client
             {
 
                 byte[] passwordBytes = Encoding.ASCII.GetBytes(item.Value);
-                if (CompareBytes(wordBytes,passwordBytes))
+                if (CompareBytes(wordBytes, passwordBytes))
                 {
                     return true;
                 }
