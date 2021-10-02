@@ -26,24 +26,23 @@ namespace Client
             //read user inputs
             Dictionary<string, string> userInformation = JsonConvert.DeserializeObject<Dictionary<string, string>>(sr.ReadLine());
             List<string> dictionaryWords = JsonConvert.DeserializeObject<List<string>>(sr.ReadLine());
-            String match = "";
+            List<string> matches = new List<string>();
             foreach (String word in dictionaryWords)
             {
                 string possibleMatch = CheckWithVariations(userInformation, word);
                 if (possibleMatch != null)
                 {
-                    match = possibleMatch;
-                    break;
+                    matches.Add(possibleMatch);
                 }
             }
-            if (string.IsNullOrEmpty(match))
+            if (matches.Count == 0)
             {
                 Console.WriteLine("There was no match!");
                 Console.ReadLine();
             } 
             else
             {
-                Console.WriteLine("The match is " + match);
+                Console.WriteLine("The match is " + string.Join(",", matches));
                 Console.ReadLine();
             }
             ns.Close();
