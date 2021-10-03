@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
@@ -15,8 +16,24 @@ namespace Client
     {
 
         private static readonly HashAlgorithm hash = new SHA1CryptoServiceProvider();
+
         static void Main(string[] args)
         {
+            string GetMacAddress()
+            {
+                string macAddresses = string.Empty;
+
+                foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces())
+                {
+                    if (nic.OperationalStatus == OperationalStatus.Up)
+                    {
+                        macAddresses += nic.GetPhysicalAddress().ToString();
+                        break;
+                    }
+                }
+
+                return macAddresses;
+            }
             TcpClient clientSocket = new TcpClient("localhost", 6789);
 
             Stream ns = clientSocket.GetStream();  //provides a NetworkStream
@@ -37,7 +54,11 @@ namespace Client
 
                 }
             }
+
+            string clienname = "From Pc: " + GetMacAddress();
+            sw.WriteLine(JsonConvert.SerializeObject(clienname));
             sw.WriteLine(JsonConvert.SerializeObject(matches));
+            
 
             if (matches.Count == 0)
             {
